@@ -24,7 +24,7 @@ if: branch IN (master, 3.0, 2.4, 2.2, 2.0, 1.24, 1.22, 1.20, 1.18) OR repo != ha
 # disambiguate the matrix entry.
 jobs:
   include:
-   - env: SCRIPT=meta USE_GOLD=NO
+   - env: SCRIPT=meta
 
    # These don't have -dyn/-prof whitelisted yet,
    # so we have to do the old-style installation
@@ -43,21 +43,21 @@ jobs:
    - env: SCRIPT=bootstrap
    - env: SCRIPT=bootstrap GHCVER=8.0.2
 
-   - env: GHCVER=7.8.4 USE_GOLD=NO CABAL_LIB_ONLY=YES
+   - env: GHCVER=7.8.4 CABAL_LIB_ONLY=YES
      os: osx
      # Keep this synced with travis/upload.sh
      osx_image: xcode6.4 # We need 10.10
-   - env: GHCVER=7.10.3 USE_GOLD=NO
+   - env: GHCVER=7.10.3
      os: osx
-   - env: GHCVER=8.0.2 USE_GOLD=NO
+   - env: GHCVER=8.0.2
      os: osx
-   - env: SCRIPT=bootstrap GHCVER=8.0.2 USE_GOLD=NO
+   - env: SCRIPT=bootstrap GHCVER=8.0.2
      os: osx
 
   allow_failures:
-   - env: GHCVER=7.10.3 USE_GOLD=NO
+   - env: GHCVER=7.10.3
      os: osx
-   - env: GHCVER=8.0.2 USE_GOLD=NO
+   - env: GHCVER=8.0.2
      os: osx
 
  # TODO add PARSEC_BUNDLED=YES when it's so
@@ -72,8 +72,8 @@ before_install:
  - export PATH=$HOME/.cabal/bin:$PATH
  - export PATH=$HOME/.local/bin:$PATH
  - export PATH=/opt/cabal/2.4/bin:$PATH
- - if [ "$USE_GOLD" = "YES" ]; then sudo update-alternatives --install "/usr/bin/ld" "ld" "/usr/bin/ld.gold" 20; fi
- - if [ "$USE_GOLD" = "YES" ]; then sudo update-alternatives --install "/usr/bin/ld" "ld" "/usr/bin/ld.bfd" 10; fi
+ - if [ "$USE_GOLD" = "YES" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo update-alternatives --install "/usr/bin/ld" "ld" "/usr/bin/ld.gold" 20; fi
+ - if [ "$USE_GOLD" = "YES" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo update-alternatives --install "/usr/bin/ld" "ld" "/usr/bin/ld.bfd" 10; fi
  - ld -v
  - ./travis-install.sh
 
